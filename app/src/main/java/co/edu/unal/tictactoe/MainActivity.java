@@ -2,13 +2,18 @@ package co.edu.unal.tictactoe;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -21,6 +26,16 @@ public class MainActivity extends AppCompatActivity {
     private Button mBoardButtons[];
     // Various text displayed
     private TextView mInfoTextView;
+    public enum DifficultyLevel {Easy, Harder, Expert};
+    private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
+
+    static final int DIALOG_DIFFICULTY_ID = 0;
+    static final int DIALOG_QUIT_ID = 1;
+
+    public static final char HUMAN_PLAYER = 'X';
+    public static final char COMPUTER_PLAYER = 'O';
+    public static final char OPEN_SPOT = ' ';
+    public static final int BOARD_SIZE = 9;
 
 
     @Override
@@ -45,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startNewGame(){
-        mGame.clearBoard();
 
         // Reset all buttons
         for (int i = 0; i < mBoardButtons.length; i++) {
@@ -54,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             mBoardButtons[i].setOnClickListener(new ButtonClickListener(i));
 
             // Human goes first
-            mInfoTextView.setText(R.string.first_human);
+            //mInfoTextView.setText(R.string.first_human);
+            mInfoTextView.setText("test");
          // End of startNewGame
         }
 
@@ -73,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 // If no winner yet, let the computer make a move
                 int winner = checkForWinner();
                 if (winner == 0) {
-                    mInfoTextView.setText(R.string.turn_computer);
+                    //mInfoTextView.setText(R.string.turn_computer);
                     int move = getComputerMove();
                     setMove(TicTacToeGame.COMPUTER_PLAYER, move);
                     winner = checkForWinner();
@@ -89,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    mInfoTextView.setText(R.string.result_computer_wins);
+                    //InfoTextView.setText(R.string.result_computer_wins);
                     for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
                         mBoardButtons[i].setEnabled(false);
                     }
@@ -173,36 +188,40 @@ public class MainActivity extends AppCompatActivity {
         mRand = new Random();
         int a;
 
-        // First see if there's a move O can make to win
-        for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
-            if (mBoardButtons[i].getText().charAt(0) != TicTacToeGame.HUMAN_PLAYER &&
-                    mBoardButtons[i].getText().charAt(0) != TicTacToeGame.COMPUTER_PLAYER) {
-                 mBoardButtons[i].setText("O");
 
-                if (checkForWinner() == 3) {
-                    mBoardButtons[i].setText(" ");
-                    return i;
+        if (mDifficultyLevel == DifficultyLevel.Expert) {
+
+            // First see if there's a move O can make to win
+            for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
+                if (mBoardButtons[i].getText().charAt(0) != TicTacToeGame.HUMAN_PLAYER &&
+                        mBoardButtons[i].getText().charAt(0) != TicTacToeGame.COMPUTER_PLAYER) {
+                    mBoardButtons[i].setText("O");
+
+                    if (checkForWinner() == 3) {
+                        mBoardButtons[i].setText(" ");
+                        return i;
+                    } else
+                        mBoardButtons[i].setText(" ");
                 }
-                else
-                    mBoardButtons[i].setText(" ");
-            }
-
-        }
-
-        // See if there's a move O can make to block X from winning
-        for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
-            if (mBoardButtons[i].getText().charAt(0) != TicTacToeGame.HUMAN_PLAYER &&
-                    mBoardButtons[i].getText().charAt(0) != TicTacToeGame.COMPUTER_PLAYER) {
-                mBoardButtons[i].setText("X");
-                if (checkForWinner() == 2) {
-                    mBoardButtons[i].setText(" ");
-                    return i;
-                }
-                else
-                    mBoardButtons[i].setText(" ");
             }
         }
 
+        if (mDifficultyLevel == DifficultyLevel.Expert || mDifficultyLevel == DifficultyLevel.Harder) {
+
+
+            // See if there's a move O can make to block X from winning
+            for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
+                if (mBoardButtons[i].getText().charAt(0) != TicTacToeGame.HUMAN_PLAYER &&
+                        mBoardButtons[i].getText().charAt(0) != TicTacToeGame.COMPUTER_PLAYER) {
+                    mBoardButtons[i].setText("X");
+                    if (checkForWinner() == 2) {
+                        mBoardButtons[i].setText(" ");
+                        return i;
+                    } else
+                        mBoardButtons[i].setText(" ");
+                }
+            }
+        }
 
 
         // Generate random move
@@ -213,19 +232,99 @@ public class MainActivity extends AppCompatActivity {
 
         return a;
     }
-
+/*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add("New Game");
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startNewGame();
+        switch (item.getItemId()) {
+            case R.id.new_game:
+                startNewGame();
+                return true;
+            case R.id.ai_difficulty:
+                showDialog(DIALOG_DIFFICULTY_ID);
+                return true;
+            case R.id.quit:
+                showDialog(DIALOG_QUIT_ID);
+                return true;
+        }
+        return false;
+    }
+
+    public  DifficultyLevel getDifficultyLevel() {
+        return mDifficultyLevel;
+    }
+public void setDifficultyLevel(DifficultyLevel difficultyLevel){
+        mDifficultyLevel = difficultyLevel;
+}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.options_menu, menu);
         return true;
     }
+
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog = null;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        switch(id) {
+            case DIALOG_DIFFICULTY_ID:
+                builder.setTitle(R.string.difficulty_choose);
+                final CharSequence[] levels = {
+                        getResources().getString(R.string.difficulty_easy),
+                        getResources().getString(R.string.difficulty_harder),
+                        getResources().getString(R.string.difficulty_expert)};
+// TODO: Set selected, an integer (0 to n-1), for the Difficulty dialog.
+// selected is the radio button that should be selected.
+                builder.setSingleChoiceItems(levels, 0,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int item) {
+                                dialog.dismiss(); // Close dialog
+// TODO: Set the diff level of mGame based on which item was selected.
+                                if (item == 0)
+                                setDifficultyLevel(DifficultyLevel.Easy);
+                                else if (item == 1 )
+                                setDifficultyLevel(DifficultyLevel.Harder);
+                                else
+                                setDifficultyLevel(DifficultyLevel.Expert);
+// Display the selected difficulty level
+                                Toast.makeText(getApplicationContext(), levels[item],
+
+                                        Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                dialog = builder.create();
+                break;
+
+            case DIALOG_QUIT_ID:
+// Create the quit confirmation dialog
+                builder.setMessage(R.string.quit_question)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                MainActivity.this.finish();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null);
+                dialog = builder.create();
+                break;
+        }
+
+        return dialog;
+    }
+
+
+
 
     }
 

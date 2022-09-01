@@ -15,8 +15,5 @@ public class TicTacToeGame {
     }
 
 
-    public void clearBoard(){
-    }
-
 }
 
