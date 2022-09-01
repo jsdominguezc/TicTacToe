@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
             mBoardButtons[i].setOnClickListener(new ButtonClickListener(i));
 
             // Human goes first
-            //mInfoTextView.setText(R.string.first_human);
-            mInfoTextView.setText("test");
+            mInfoTextView.setText(R.string.first_human);
+
          // End of startNewGame
         }
 
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 // If no winner yet, let the computer make a move
                 int winner = checkForWinner();
                 if (winner == 0) {
-                    //mInfoTextView.setText(R.string.turn_computer);
+                    mInfoTextView.setText(R.string.turn_computer);
                     int move = getComputerMove();
                     setMove(TicTacToeGame.COMPUTER_PLAYER, move);
                     winner = checkForWinner();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 else {
-                    //InfoTextView.setText(R.string.result_computer_wins);
+                    mInfoTextView.setText(R.string.result_computer_wins);
                     for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
                         mBoardButtons[i].setEnabled(false);
                     }
