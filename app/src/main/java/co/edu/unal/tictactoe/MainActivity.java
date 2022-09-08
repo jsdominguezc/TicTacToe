@@ -26,16 +26,20 @@ public class MainActivity extends AppCompatActivity {
     private Button mBoardButtons[];
     // Various text displayed
     private TextView mInfoTextView;
+    private TextView mInfoTextView1;
+    private TextView mInfoTextView2;
+    private TextView mInfoTextView3;
     public enum DifficultyLevel {Easy, Harder, Expert};
     private DifficultyLevel mDifficultyLevel = DifficultyLevel.Easy;
 
     static final int DIALOG_DIFFICULTY_ID = 0;
     static final int DIALOG_QUIT_ID = 1;
+    private int cont = 1;
+    private int win = 0;
+    private int tie = 0;
+    private int lose = 0;
 
-    public static final char HUMAN_PLAYER = 'X';
-    public static final char COMPUTER_PLAYER = 'O';
-    public static final char OPEN_SPOT = ' ';
-    public static final int BOARD_SIZE = 9;
+
 
 
     @Override
@@ -54,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         mBoardButtons[7] = (Button) findViewById(R.id.eight);
         mBoardButtons[8] = (Button) findViewById(R.id.nine);
         mInfoTextView = (TextView) findViewById(R.id.information);
+        mInfoTextView1 = (TextView) findViewById(R.id.textView);
+        mInfoTextView2 = (TextView) findViewById(R.id.textView2);
+        mInfoTextView3 = (TextView) findViewById(R.id.textView3);
         mGame = new TicTacToeGame();
 
         startNewGame();
@@ -67,11 +74,20 @@ public class MainActivity extends AppCompatActivity {
             mBoardButtons[i].setEnabled(true);
             mBoardButtons[i].setOnClickListener(new ButtonClickListener(i));
 
-            // Human goes first
-            mInfoTextView.setText(R.string.first_human);
-
-         // End of startNewGame
         }
+        // who goes first
+        if (cont % 2 == 0) {
+            int move = getComputerMove();
+            setMove(TicTacToeGame.COMPUTER_PLAYER, move);}
+        else{
+            mInfoTextView.setText(R.string.first_human);}
+        cont++;
+
+        //mInfoTextView1.setText(R.string.human + win);
+        mInfoTextView1.setText("Win: "+win);
+        mInfoTextView2.setText("Tie: "+tie);
+        mInfoTextView3.setText("Android:"+ lose);
+        // End of startNewGame
 
     }
 
@@ -82,11 +98,15 @@ public class MainActivity extends AppCompatActivity {
             this.location = location;
         }
         public void onClick(View view) {
+
+
             if (mBoardButtons[location].isEnabled()) {
+
                 setMove(TicTacToeGame.HUMAN_PLAYER, location);
 
 // If no winner yet, let the computer make a move
                 int winner = checkForWinner();
+                mCount(winner);
                 if (winner == 0) {
                     mInfoTextView.setText(R.string.turn_computer);
                     int move = getComputerMove();
@@ -95,8 +115,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (winner == 0)
                     mInfoTextView.setText(R.string.turn_human);
-                else if (winner == 1)
+                else if (winner == 1){
                     mInfoTextView.setText(R.string.result_tie);
+                tie++;}
                 else if (winner == 2) {
                     mInfoTextView.setText(R.string.result_human_wins);
                     for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
@@ -105,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     mInfoTextView.setText(R.string.result_computer_wins);
+                    lose++;
                     for (int i = 0; i < TicTacToeGame.BOARD_SIZE; i++) {
                         mBoardButtons[i].setEnabled(false);
                     }
@@ -323,7 +345,14 @@ public void setDifficultyLevel(DifficultyLevel difficultyLevel){
         return dialog;
     }
 
-
+public void mCount (int winner) {
+        if (winner == 1 )
+            tie++;
+        else if (winner == 2)
+            win++;
+        else if (winner == 3)
+            lose++;
+}
 
 
     }

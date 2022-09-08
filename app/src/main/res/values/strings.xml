@@ -13,4 +13,8 @@
     <string name="quit_question">Do you want to leave?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="human">Human: </string>
+    <string name="tie">Ties: </string>
+    <string name="android">Android: </string>
+
 </resources>

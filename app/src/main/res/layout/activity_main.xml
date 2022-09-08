@@ -116,6 +116,40 @@
             android:visibility="visible"
             tools:visibility="visible" />
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="140dp"
+                android:layout_height="100dp"
+                android:gravity="center_horizontal"
+                android:text="Human: 0"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="140dp"
+                android:layout_height="100dp"
+                android:gravity="center_horizontal"
+                android:text="Ties: 0"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="140dp"
+                android:layout_height="100dp"
+                android:gravity="center_horizontal"
+                android:text="Android: 0"
+                android:textSize="20sp" />
+
+
+
+        </TableRow>
+
     </LinearLayout>
 
 
