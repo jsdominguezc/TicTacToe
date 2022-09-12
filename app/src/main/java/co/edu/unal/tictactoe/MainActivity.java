@@ -68,7 +68,21 @@ public class MainActivity extends AppCompatActivity {
         // Listen for touches on the board
         mBoardView.setOnTouchListener(mTouchListener);
 
-        startNewGame();
+
+        if (savedInstanceState == null) {
+            startNewGame();
+        }
+        else {
+// Restore the game's state
+            mGame.setBoardState(savedInstanceState.getCharArray("board"));
+            mGameOver = savedInstanceState.getBoolean("mGameOver");
+            mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
+            win = savedInstanceState.getInt("win");
+            lose = savedInstanceState.getInt("lose");
+            tie = savedInstanceState.getInt("tie");
+            cont = savedInstanceState.getInt("cont");
+        }
+        displayScores();
     }
 
     private void startNewGame(){
@@ -269,6 +283,23 @@ public void setDifficultyLevel(DifficultyLevel difficultyLevel){
         mComputerWins.release();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putCharArray("board", mGame.getBoardState());
+        outState.putBoolean("mGameOver", mGameOver);
+        outState.putInt("win", Integer.valueOf(win));
+        outState.putInt("lose", Integer.valueOf(lose));
+        outState.putInt("tie", Integer.valueOf(tie));
+        outState.putCharSequence("info", mInfoTextView.getText());
+        outState.putInt("cont", Integer.valueOf(cont));
+    }
+
+    private void displayScores() {
+        mInfoTextView1.setText(Integer.toString(win));
+        mInfoTextView2.setText(Integer.toString(lose));
+        mInfoTextView3.setText(Integer.toString(tie));
+    }
 
     }
 

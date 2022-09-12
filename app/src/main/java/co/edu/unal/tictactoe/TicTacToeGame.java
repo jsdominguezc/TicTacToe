@@ -150,6 +150,12 @@ public class TicTacToeGame {
         return mBoard[o];
     }
 
+    public char[] getBoardState() {
+        return mBoard;
+    }
 
+    public void setBoardState(char[] Board){
+        mBoard = Board;
+    }
 }
 
