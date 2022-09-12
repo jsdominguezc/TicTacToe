@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.view.Menu;
@@ -41,13 +42,18 @@ public class MainActivity extends AppCompatActivity {
     private int win = 0;
     private int tie = 0;
     private int lose = 0;
+    private int diff = 0;
     private boolean mGameOver = false;
 
-//raw
+//raw audios
     MediaPlayer mHumanMediaPlayer;
     MediaPlayer mComputerMediaPlayer;
     MediaPlayer mHumanWins;
     MediaPlayer mComputerWins;
+
+    // cache
+
+    private SharedPreferences mPrefs;
 
 
     @Override
@@ -68,6 +74,22 @@ public class MainActivity extends AppCompatActivity {
         // Listen for touches on the board
         mBoardView.setOnTouchListener(mTouchListener);
 
+        //prefs
+        mPrefs = getSharedPreferences("ttt_prefs",MODE_PRIVATE);
+
+        // Restore the scores
+        win = mPrefs.getInt("win", 0);
+        lose = mPrefs.getInt("lose", 0);
+        tie = mPrefs.getInt("tie", 0);
+        diff = mPrefs.getInt("diff",0);
+
+        if (diff==0)
+            mDifficultyLevel = DifficultyLevel.Easy;
+        else if (diff ==1)
+            mDifficultyLevel = DifficultyLevel.Harder;
+        else
+            mDifficultyLevel = DifficultyLevel.Expert;
+
 
         if (savedInstanceState == null) {
             startNewGame();
@@ -77,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
             mGame.setBoardState(savedInstanceState.getCharArray("board"));
             mGameOver = savedInstanceState.getBoolean("mGameOver");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            win = savedInstanceState.getInt("win");
-            lose = savedInstanceState.getInt("lose");
-            tie = savedInstanceState.getInt("tie");
+            //win = savedInstanceState.getInt("win");
+            //lose = savedInstanceState.getInt("lose");
+            //tie = savedInstanceState.getInt("tie");
             cont = savedInstanceState.getInt("cont");
         }
         displayScores();
@@ -119,6 +141,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.ai_difficulty:
                 showDialog(DIALOG_DIFFICULTY_ID);
+                return true;
+            case R.id.reset:
+                resetScore();
                 return true;
             case R.id.quit:
                 showDialog(DIALOG_QUIT_ID);
@@ -288,17 +313,46 @@ public void setDifficultyLevel(DifficultyLevel difficultyLevel){
         super.onSaveInstanceState(outState);
         outState.putCharArray("board", mGame.getBoardState());
         outState.putBoolean("mGameOver", mGameOver);
-        outState.putInt("win", Integer.valueOf(win));
-        outState.putInt("lose", Integer.valueOf(lose));
-        outState.putInt("tie", Integer.valueOf(tie));
+        //outState.putInt("win", Integer.valueOf(win));
+        //outState.putInt("lose", Integer.valueOf(lose));
+        //outState.putInt("tie", Integer.valueOf(tie));
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putInt("cont", Integer.valueOf(cont));
     }
 
     private void displayScores() {
-        mInfoTextView1.setText(Integer.toString(win));
-        mInfoTextView2.setText(Integer.toString(lose));
-        mInfoTextView3.setText(Integer.toString(tie));
+        mInfoTextView1.setText("Win: "+Integer.toString(win));
+        mInfoTextView3.setText("Android: "+Integer.toString(lose));
+        mInfoTextView2.setText("Tie: "+Integer.toString(tie));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+// Save the current scores
+        SharedPreferences.Editor ed = mPrefs.edit();
+        ed.putInt("win", win);
+        ed.putInt("lose", lose);
+        ed.putInt("tie", tie);
+
+
+        if (mDifficultyLevel == DifficultyLevel.Easy)
+            diff=0;
+        else if (mDifficultyLevel == DifficultyLevel.Harder)
+                diff = 1;
+        else
+            diff=2;
+
+
+        ed.putInt("diff", diff);
+        ed.commit();
+    }
+
+    private void resetScore(){
+        win = 0;
+        lose = 0;
+        tie = 0;
+        displayScores();
     }
 
     }
