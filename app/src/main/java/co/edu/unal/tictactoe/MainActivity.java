@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             mDifficultyLevel = DifficultyLevel.Harder;
         else
             mDifficultyLevel = DifficultyLevel.Expert;
-
+        setDifficultyLevel(mDifficultyLevel);
 
         if (savedInstanceState == null) {
             startNewGame();
@@ -182,7 +182,7 @@ public void setDifficultyLevel(DifficultyLevel difficultyLevel){
                         getResources().getString(R.string.difficulty_expert)};
 // TODO: Set selected, an integer (0 to n-1), for the Difficulty dialog.
 // selected is the radio button that should be selected.
-                builder.setSingleChoiceItems(levels, 0,
+                builder.setSingleChoiceItems(levels, diff,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {
                                 dialog.dismiss(); // Close dialog
