@@ -273,7 +273,7 @@ public void setDifficultyLevel(DifficultyLevel difficultyLevel){
         }
         else if (winner == 3){
             lose++;
-            mInfoTextView3.setText("Android:"+ lose);
+            mInfoTextView3.setText("Android: "+ lose);
             mComputerWins.start();
         }
 
