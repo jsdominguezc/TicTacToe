@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -23,9 +24,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private TicTacToeGame mGame;
-
     // Buttons making up the board
     private BoardView mBoardView;
+
 
     // Various text displayed
     private TextView mInfoTextView;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private int diff = 0;
     private boolean mGameOver = false;
 
+
 //raw audios
     MediaPlayer mHumanMediaPlayer;
     MediaPlayer mComputerMediaPlayer;
@@ -59,12 +61,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.first_main);
+
 
         mInfoTextView = (TextView) findViewById(R.id.information);
         mInfoTextView1 = (TextView) findViewById(R.id.textView);
         mInfoTextView2 = (TextView) findViewById(R.id.textView2);
         mInfoTextView3 = (TextView) findViewById(R.id.textView3);
+
 
         mGame = new TicTacToeGame();
 
@@ -99,13 +103,12 @@ public class MainActivity extends AppCompatActivity {
             mGame.setBoardState(savedInstanceState.getCharArray("board"));
             mGameOver = savedInstanceState.getBoolean("mGameOver");
             mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
-            //win = savedInstanceState.getInt("win");
-            //lose = savedInstanceState.getInt("lose");
-            //tie = savedInstanceState.getInt("tie");
             cont = savedInstanceState.getInt("cont");
         }
         displayScores();
     }
+
+
 
     private void startNewGame(){
 
